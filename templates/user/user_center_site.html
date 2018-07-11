@@ -1,0 +1,108 @@
+<script src="../../static/js/slide.js"></script>{% extends "base_user.html" %}
+{% block header %}
+<script>
+    $(function () {
+        //加载省级的数据
+        //使用 ajax 加载省信息
+        pro = $('#pro')
+        $.get('/user/pro/', function (list) {
+            pro = $('#pro')
+//            console.log('add pro data')
+            //{data:[[1,'北京'],[2,'天津'],...]}
+            $.each(list.data, function (index, item) {
+                //[1,'北京']
+                pro.append('<option value="' + item[0] + '">' + item[1] +
+                    '</option>')
+            });
+        })
+
+        //查询市的信息
+        $('#pro').change(function () {
+            $.get('/user/city' + $(this).val() + '/', function (list) {
+                city = $('#city');
+                city.empty().append('<option value="0">请选择市</option>')
+                $('#dis').empty().append('<option value="0"> 请选择区县</option>')
+                $.each(list.data, function (index, item) {
+//{id:1,title:北京}
+                    city.append('<option value="' + item.id + '">' + item.title
+                        + '</option>');
+                });
+            });
+        });
+
+
+        //查询区县的信息
+        $('#city').change(function () {
+            $.get('/user/city' + $(this).val() + '/', function (list) {
+                dis = $('#dis').empty().append('<option value="0">请选择区县</option>');
+                $.each(list.data, function (index, item) {
+                    dis.append('<option value="' + item.id + '">' + item.title
+                        + '</option>');
+                });
+            });
+        });
+
+    })
+</script>
+{% endblock header %}
+{% block user_fr %}
+<div class="right_content clearfix">
+		<h3 class="common_title2">收货地址</h3>
+		<div class="site_con">
+			<dl>
+				<dt>当前地址：</dt>
+				{% for address in addresslist %}
+					<dd id="{{address.id}}">
+						{{address.province}} {{address.city}} {{address.country}}  {{address.intro}} {{address.recv}} {{address.postcode}} {{address.phone}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						{% if address.status %}
+							默认地址
+						{% endif %}
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="button" value="删除" class="del_address" style="background-color:transparent;border: 0;">
+					</dd>
+				{% empty %}
+				<dd>当前没有收货地址，请添加一个</dd>
+				{% endfor %}
+			</dl>
+		</div>
+		<h3 class="common_title2">编辑地址</h3>
+		<div class="site_con">
+			<form method="post" action="{% url 'user:addaddress'%}">
+				{% csrf_token %}
+				<div class="form_group">
+					<label>收件人：</label>
+					<input type="text" name="recv">
+				</div>
+				<div class="form_group">
+					<label>省份：</label>
+					<select name="pro" id="pro">
+						<option value="0">请选择省份</option>
+					</select>
+					地市：
+					<select name="city" id="city">
+						<option value="0">请选择市</option>
+					</select>
+					县区：
+					<select name="dis" id="dis">
+						<option value="0">请选择县区</option>
+					</select>
+				</div>
+				<div class="form_group form_group2" >
+					<label>详细地址：</label>
+					<textarea class="site_area" name="intro"></textarea>
+				</div>
+				<div class="form_group">
+					<label>邮编：</label>
+					<input type="text" name="postcode">
+				</div>
+				<div class="form_group">
+					<label>手机：</label>
+					<input type="text" name="phone">
+				</div>
+				<label>设置为默认地址：</label>
+				<input type="checkbox" name="status">
+				<input type="submit" name="" value="提交" class="sub_btn" style="margin-left: 50px">
+			</form>
+		</div>
+</div>
+{% endblock user_fr %}

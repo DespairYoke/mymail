@@ -1,0 +1,79 @@
+<!--@
+Time    : 2018/5/15 15:54
+@Author  : Chen Xuge
+@Site    : 
+@File    : list.html
+@Software: PyCharm
+-->
+{% extends 'base_goods.html' %}
+{%block title %}天天生鲜-商品列表{% endblock title %}
+{%block num%}{{num}}{%endblock num%}
+
+{%block center_next %}
+<div class="breadcrumb">
+    <a href="{% url 'goods:index' %}">全部分类</a>
+    <span>></span>
+    <a href="">{{cate.cate}}</a>
+</div>
+
+<div class="main_wrap clearfix">
+    <div class="l_wrap fl clearfix">
+        <div class="new_goods">
+            <h3>新品推荐</h3>
+            <ul>
+                {%for good in goodlist%}
+                <li>
+                    <a href="{% url 'goods:detail' good.id %}"><img src="/static/media/{{good.pic}}"></a>
+                    <h4><a href="{% url 'goods:detail' good.id %}">{{good.name}}</a></h4>
+                    <div class="prize">￥{{good.price}}</div>
+                </li>
+                {%endfor%}
+            </ul>
+        </div>
+    </div>
+
+    <div class="r_wrap fr clearfix">
+        <div class="sort_bar">
+            <a href="#" class="active">默认</a>
+            <a href="#">价格</a>
+            <a href="#">人气</a>
+        </div>
+
+        <ul class="goods_type_list clearfix">
+          {% for good in goodslist%}
+            <li>
+                <a href="{% url 'goods:detail' good.id %}"><img src="/static/media/{{good.pic}}"></a>
+                <h4><a href="{% url 'goods:detail' good.id %}">{{good.name}}</a></h4>
+                <div class="operate">
+                    <span class="prize">￥{{good.price}}</span>
+                    <span class="unit">{{good.unit}}</span>
+                    <!--<a href="{% url 'cart:add_cart' good.id 1 %}" class="add_goods" title="加入购物车" id = {{good.id}}></a>-->
+                    <a href="#" class="add_goods" title="加入购物车" id = {{good.id}}></a>
+                </div>
+            </li>
+            {%endfor%}
+        </ul>
+
+        <div class="pagenation">
+            {% if goodslist.has_previous %}
+            <a href="{% url 'goods:list' cate.id  goodslist.previous_page_number %}" class="active">上一页</a>
+            {% else %}
+            <a href="" >上一页</a>
+            {% endif %}
+            {% for pindex in goodslist.paginator.page_range %}
+                {% if pindex == goodslist.number %}
+                  <a href="" >{{ pindex }} </a>
+                {% else %}
+                   <a href="{% url 'goods:list' cate.id  pindex %}" class="active">{{ pindex }} </a>
+                {% endif %}
+            {% endfor %}
+            {% if goodslist.has_next %}
+            <a href="{% url 'goods:list' cate.id  goodslist.next_page_number %}" class="active">下一页</a>
+            {% else %}
+            <a href="" >下一页</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{%endblock center_next %}

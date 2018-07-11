@@ -1,0 +1,84 @@
+<!--@
+Time    : 2018/5/15 15:06
+@Author  : Chen Xuge
+@Site    : 
+@File    : detail.html
+@Software: PyCharm
+-->
+{% extends 'base_goods.html' %}
+{%block title %}天天生鲜-商品详情{% endblock title %}
+
+{% block header %}{% endblock header %}
+{%block num%}{{num}}{%endblock num%}
+
+{%block center_next %}
+<div class="breadcrumb">
+    <a href="{% url 'goods:index' %}">全部分类</a>
+    <span>></span>
+    <a href="{% url 'goods:list' cate_name.id 1%}">{{cate_name.cate}}</a>
+    <span>></span>
+    <a href="">商品详情</a>
+</div>
+
+<div class="goods_detail_con clearfix">
+    <div class="goods_detail_pic fl"><img src="/static/media/{{good.pic}}"></div>
+
+    <div class="goods_detail_list fr">
+        <form method="post" action="{% url 'myorder:place_order' 0 %}">
+            {% csrf_token %}
+            <h3>{{good.name}}</h3>
+            <br/>
+            <div class="prize_bar">
+                <span class="show_pirze">¥ <em>{{good.price}}</em></span>
+                <span class="show_unit">单  位：{{good.unit}}</span>
+            </div>
+            <div class="goods_num clearfix">
+                <div class="num_name fl">数 量：</div>
+                <div class="num_add fl">
+                    <input type="text" class="num_show fl" value="1" name="num" >
+                    <a href="#" class="add fr">+</a>
+                    <a href="#" class="minus fr">-</a>
+                </div>
+            </div>
+            <div class="total">总价： <em class="totalem">{{good.price}} 元</em></div>
+            <div class="operate_btn">
+                <input type="hidden" value="{{good.id}}" name="good_id">
+                <input type="submit" class="sub_btn"  style="width: 178px" value="立即购买">
+                <a href="#" class="add_cart" id="add_cart" goodid={{good.id}}>加入购物车</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="main_wrap clearfix">
+    <div class="l_wrap fl clearfix">
+        <div class="new_goods">
+            <h3>新品推荐</h3>
+            <ul>
+                {% for good in goodlist%}
+                <li>
+                    <a href="{% url 'goods:detail' good.id %}"><img src="/static/media/{{good.pic}}"></a>
+                    <h4><a href="{% url 'goods:detail' good.id %}">{{good.name}}</a></h4>
+                    <div class="prize">￥{{good.price}}</div>
+                </li>
+                {% endfor%}
+            </ul>
+        </div>
+    </div>
+
+    <div class="r_wrap fr clearfix">
+        <ul class="detail_tab clearfix">
+            <li class="active">商品介绍</li>
+            <li>评论</li>
+        </ul>
+
+        <div class="tab_content">
+            <dl>
+                <dt>商品详情：</dt>
+                <dd>{{good.content}}</dd>
+            </dl>
+        </div>
+
+    </div>
+</div>
+{%endblock center_next %}
